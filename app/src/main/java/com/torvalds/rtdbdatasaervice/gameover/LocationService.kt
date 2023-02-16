@@ -45,7 +45,7 @@ class LocationService : Service() {
                     app.marker!!.setLat(lat)
                     app.marker!!.setLong(long)
                     app.marker!!.setLocTime(timeStmp.toString())
-                    Toast.makeText(this, "Location: " + location.latitude.toString() + "\t" + location.longitude.toString(), Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(this, "Location: " + location.latitude.toString() + "\t" + location.longitude.toString(), Toast.LENGTH_SHORT).show()
                 }
             }
     }

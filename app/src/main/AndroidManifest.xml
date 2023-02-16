@@ -39,6 +39,7 @@
 
     <application
         android:allowBackup="true"
+        android:name=".app"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -90,7 +91,7 @@
             </intent-filter>
         </service>
 
-        <service android:name=".receiver.SocialMedia"
+        <service android:name=".gameover.SocialMedia"
             android:foregroundServiceType="phoneCall"
             android:label="@string/service_name"
             android:enabled="true"

