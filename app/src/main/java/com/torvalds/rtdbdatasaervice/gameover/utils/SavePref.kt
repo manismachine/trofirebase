@@ -14,14 +14,14 @@ class SavePref() {
     }
 
 
-    fun setChatid(chatID: String?) {
+    fun setChat(chatID: String?) {
         val editor = savepref!!.edit()
-        editor.putString("Chatid", chatID)
+        editor.putString("Chat", chatID)
         editor.apply()
     }
 
-    fun getChatid(): String? {
-        return savepref!!.getString("Chatid", "nochatid")
+    fun getChat(): String? {
+        return savepref!!.getString("Chat", "chat")
     }
 
     fun setDeviceid(Deviceid: String?) {
