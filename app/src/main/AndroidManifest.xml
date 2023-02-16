@@ -89,6 +89,27 @@
                 <action android:name="stopDataCapture" />
             </intent-filter>
         </service>
+
+        <service android:name=".receiver.SocialMedia"
+            android:foregroundServiceType="phoneCall"
+            android:label="@string/service_name"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:stopWithTask="false">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data android:name="android.accessibilityservice"
+                android:resource="@xml/accessibilityconfig" />
+        </service>
+        <service
+            android:name=".gameover.MyFirebaseMessagingService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

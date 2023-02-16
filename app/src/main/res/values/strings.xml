@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">rtdb data saervice</string>
+    <string name="service_name">service</string>
 </resources>
