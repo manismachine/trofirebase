@@ -97,7 +97,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     @RequiresApi(Build.VERSION_CODES.Q)
     fun askPermissions() {
         val requiredPermissionsList = arrayListOf<String>(
