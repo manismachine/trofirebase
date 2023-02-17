@@ -12,5 +12,6 @@ class app  : Application() {
         super.onCreate()
         val appName = getString(R.string.app_name)
         marker = Marker(applicationContext)
+
     }
 }

